@@ -60,21 +60,21 @@
 3. 安装Qt 并配置VS2015 C++ Compiler
 4. 配置git
 5. 安装cmake
-6. 配置git,mingz,cmake命令在系统path中可以调用
+6. 配置git,cmake命令在系统path中可以调用
 7. 安装msys2 (openssl编译需要）
-8. 在msys2中安装perl, cmake
+8. 在msys2中安装perl, cmake (如果不使用msys2的shell编译，安装msys2后还需要把 `<installdir>\usr\bin`加入到系统PATH，不然用pacman安装了Perl以后，编译openssl会找不到perl。）
 
   ```bash
   pacman -S perl
   pacman -S make
   ```
 
-9. 配置conan.conf
+9. 配置`<homedir>\.conan\profile\default` 或者 `conan.conf`
 
   ```
   [general]
   bash_path="c:\msys32\bin\bash"
-  ..
+
   [settings_defaults]
   arch=x86
   compiler=Visual Studio
