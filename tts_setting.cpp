@@ -54,6 +54,9 @@ TTS_SettingObject TTS_Setting::loadSettings()
         so.trade_dll_path = defaultPath;
         so.bind = DEFAULT_BIND;
         so.ssl_enabled = false;
+        so.multiaccount = false;
+        so.preload_accounts = QStringList();
+        so.dlls_path = QString("");
     } else {
         so.port = setting->value("port", DEFAULT_PORT).toInt();
         so.trade_dll_path = setting->value("trade_dll_path", defaultPath).toString();
@@ -65,6 +68,9 @@ TTS_SettingObject TTS_Setting::loadSettings()
         }
         so.transport_enc_key = setting->value("transport_enc_key", QString("")).toString();
         so.transport_enc_iv = setting->value("transport_enc_iv", QString("")).toString();
+        so.multiaccount = setting->value("multiaccount").toBool();
+        so.preload_accounts = setting->value("preload_accounts", QStringList()).toStringList();
+        so.dlls_path = setting->value("dlls_path", QString("")).toString();
     }
 
     qInfo() << "Using port : " << so.port;

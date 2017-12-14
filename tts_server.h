@@ -28,7 +28,7 @@ private:
     void performResponse(const shared_ptr< Session > session, string _noFunc);
     
 public:
-    TTS_Server(TTS_SettingObject setting);
+    TTS_Server(const TTS_SettingObject& setting);
 
     void start();
     void stop();

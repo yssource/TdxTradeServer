@@ -18,6 +18,9 @@ typedef struct _TTS_SettingObject {
     QString     transport_enc_key; // 对传输进行签名的密钥
     QString     transport_enc_iv;  //
     bool        transport_enc_enabled; // 是否开启了签名加密
+    bool        multiaccount;           // 多用户模式
+    QStringList preload_accounts;   // 多用户模式下，预加载的帐号
+    QString     dlls_path;          // 多用户下，新生成的dll文件的目录，如果为空，则默认使用trade_dll_path所在的目录
 }  TTS_SettingObject;
 
 class TTS_Setting : public QObject

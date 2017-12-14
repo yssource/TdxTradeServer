@@ -14,7 +14,8 @@ SOURCES += main.cpp \
     tts_tradeapi.cpp \
     tts_server.cpp \
     tts_encrypt.cpp \
-    aes.cpp
+    aes.cpp \
+    tts_dll.cpp
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which as been marked deprecated (the exact warnings
@@ -39,7 +40,9 @@ HEADERS += \
     tts_common.h \
     tts_server.h \
     tts_encrypt.h \
-    aes.h
+    aes.h \
+    tts_dll.h \
+    tts_session.h
 
 DISTFILES += \
     conanfile.txt \

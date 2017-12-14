@@ -7,6 +7,7 @@
 #include "tts_common.h"
 #include "tts_server.h"
 #include "tts_encrypt.h"
+#include "tts_dll.h"
 
 using namespace std;
 using namespace restbed;
@@ -24,16 +25,20 @@ int main(int argc, char *argv[])
 {
     qInstallMessageHandler(xMessageHandler);
 
+    // 这里强制设定本地编码为gbk
+    QTextCodec::setCodecForLocale(QTextCodec::codecForName("GB18030"));
 
     cout << TTS_ASCII_WELCOME;
     // load settings
     TTS_SettingObject so = TTS_Setting::loadSettings();
+
+    TTS_Dll::preloadDlls(so);
     //test(so);
     //exit(-1);
     // TTS_TradeApi api(so.trade_dll_path);
-    TTS_Server server(so);
-    // start msg loop
-    server.start();
+//    TTS_Server server(so);
+//    // start msg loop
+//    server.start();
 
     return EXIT_SUCCESS;
 }

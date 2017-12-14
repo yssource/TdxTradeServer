@@ -8,7 +8,7 @@
 using namespace restbed;
 using json = nlohmann::json;
 
-TTS_Server::TTS_Server(TTS_SettingObject setting)
+TTS_Server::TTS_Server(const TTS_SettingObject& setting)
 {
     _setting = setting;
     resource = make_shared< Resource >();
