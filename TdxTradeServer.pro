@@ -41,8 +41,7 @@ HEADERS += \
     tts_server.h \
     tts_encrypt.h \
     aes.h \
-    tts_dll.h \
-    tts_session.h
+    tts_dll.h
 
 DISTFILES += \
     conanfile.txt \

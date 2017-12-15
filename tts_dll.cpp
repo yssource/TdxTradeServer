@@ -7,7 +7,12 @@ using namespace std;
 using json = nlohmann::json;
 
 QMutex TTS_Dll::initMutex; // add lock init stage
+QMutex TTS_Dll::seqMutex; // seq issue lock;
+
 std::map<std::string, std::shared_ptr<TTS_Dll>> TTS_Dll::dlls;
+std::map<uint32_t, std::string> TTS_Dll::seqAccountMapping;
+
+volatile uint32_t TTS_Dll::maxSeq = 0;
 
 TTS_Dll::TTS_Dll(const TTS_SettingObject& so, const std::string& accountNo):apiCallMutex()
 {
@@ -88,6 +93,9 @@ TTS_Dll::TTS_Dll(const TTS_SettingObject& so, const std::string& accountNo):apiC
     errout = new char[1024];
     result = new char[1024 * 1024];
     initSuccess = true;
+    TTS_Dll::seqMutex.lock();
+    seq= TTS_Dll::maxSeq++;
+    TTS_Dll::seqMutex.unlock();
 }
 
 TTS_Dll::~TTS_Dll()
@@ -112,10 +120,22 @@ std::shared_ptr<TTS_Dll> TTS_Dll::getInstance(const TTS_SettingObject& so, const
         if (dlls.find(accountNo) == dlls.end()) {
             shared_ptr<TTS_Dll> dll(new TTS_Dll(so, accountNo));
             dlls[accountNo] = dll;
+            seqAccountMapping[dll->getSeq()] = accountNo;
+            qDebug() << dll->getSeq() << ":" << accountNo.c_str();
         }
+
         initMutex.unlock();
     }
     return dlls[accountNo];
+}
+
+std::shared_ptr<TTS_Dll> TTS_Dll::getInstance(const TTS_SettingObject &so, const uint32_t seqNo)
+{
+    if (seqAccountMapping.find(seqNo) == seqAccountMapping.end()) {
+        return nullptr;
+    } else {
+        return getInstance(so, seqAccountMapping[seqNo]);
+    }
 }
 
 

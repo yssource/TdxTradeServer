@@ -36,9 +36,9 @@ int main(int argc, char *argv[])
     //test(so);
     //exit(-1);
     // TTS_TradeApi api(so.trade_dll_path);
-//    TTS_Server server(so);
-//    // start msg loop
-//    server.start();
+    TTS_Server server(so);
+    // start msg loop
+    server.start();
 
     return EXIT_SUCCESS;
 }

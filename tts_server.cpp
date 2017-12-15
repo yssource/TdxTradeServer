@@ -21,7 +21,7 @@ TTS_Server::TTS_Server(const TTS_SettingObject& setting)
 void TTS_Server::start() {
     reqnum = 0;
     auto callback = bind(&TTS_Server::postMethodHandler, this, placeholders::_1);
-    tradeApi = make_shared<TTS_TradeApi>(_setting.trade_dll_path);
+    tradeApi = make_shared<TTS_TradeApi>(_setting);
     resource->set_path("/api");
     resource->set_method_handler("POST", callback);
 

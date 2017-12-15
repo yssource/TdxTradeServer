@@ -56,6 +56,7 @@ private:
     bool outputUtf8;
 
     void setupErrForJson(const char* errout, json& resultJSON);
+    uint32_t    seq;
 
 protected:
     json convertTableToJSON(const char* result, const char* errout);
@@ -77,15 +78,23 @@ public:
     json getQuote(int ClientID, const char* Zqdm);
     json repay(int ClientID, const char* Amount);
     json jsonError(QString str);
-
+    const uint32_t getSeq() const {return seq; }
 
 // 实现一个多例模式，针对不同的帐号名，返回不同的
 private:
      static std::map<std::string, std::shared_ptr<TTS_Dll>> dlls;
+     static std::map<uint32_t, std::string> seqAccountMapping;
      static QMutex initMutex; // add lock init stage
+     static QMutex seqMutex;
 public:
      static std::shared_ptr<TTS_Dll> getInstance(const TTS_SettingObject& so, const std::string& accountNo);
+     static std::shared_ptr<TTS_Dll> getInstance(const TTS_SettingObject& so, const uint32_t seqNo);
      static void preloadDlls(TTS_SettingObject& so);
+     const static std::map<std::string, std::shared_ptr<TTS_Dll>>& allDlls() {
+        return dlls;
+     }
+     static volatile uint32_t maxSeq; // 最大id, 从0开始
+
 };
 
 #endif // TTS_DLL_H
