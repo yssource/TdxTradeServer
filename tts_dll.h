@@ -77,7 +77,6 @@ public:
     json cancelOrder(int ClientID, const char* ExchangeID, const char* hth);
     json getQuote(int ClientID, const char* Zqdm);
     json repay(int ClientID, const char* Amount);
-    json jsonError(QString str);
     const uint32_t getSeq() const {return seq; }
 
 // 实现一个多例模式，针对不同的帐号名，返回不同的

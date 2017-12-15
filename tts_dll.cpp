@@ -347,17 +347,4 @@ json TTS_Dll::convertTableToJSON(const char *result, const char* errout) {
 }
 
 
-json TTS_Dll::jsonError(QString str) {
-    string value;
-    if (outputUtf8) {
-        value = str.toUtf8();
-    } else {
-        value = str.toLocal8Bit();
-    }
-    json j;
-    j[TTS_SUCCESS] = false;
-    j[TTS_ERROR] = value;
-    return j;
-}
-
 
