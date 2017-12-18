@@ -29,6 +29,11 @@ int main(int argc, char *argv[])
     QTextCodec::setCodecForLocale(QTextCodec::codecForName("GB18030"));
 
     cout << TTS_ASCII_WELCOME;
+#ifdef QT_DEBUG
+    cout << "Debug Version..." << endl;
+#else
+    cout << "Release Version..." << endl;
+#endif
     // load settings
     TTS_SettingObject so = TTS_Setting::loadSettings();
 

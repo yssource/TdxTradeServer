@@ -61,34 +61,7 @@
 4. 配置git
 5. 安装cmake
 6. 配置git,cmake命令在系统path中可以调用
-7. 安装msys2 (openssl编译需要）
-8. 在msys2中安装perl, cmake (如果不使用msys2的shell编译，安装msys2后还需要把 `<installdir>\usr\bin`加入到系统PATH，不然用pacman安装了Perl以后，编译openssl会找不到perl。）
-
-  ```bash
-  pacman -S perl
-  pacman -S make
-  ```
-
-9. 配置`<homedir>\.conan\profile\default` 或者 `conan.conf`
-
-  ```
-  [general]
-  bash_path="c:\msys32\bin\bash"
-
-  [settings_defaults]
-  arch=x86
-  compiler=Visual Studio
-  compiler.version=14
-  compiler.runtime=MTd
-  build_type=Debug
-  os=Windows
-  ```
-
-10. 在项目目录下执行
-
-  ```
-  conan install --build zlib --buildOpenSSL --build asio --build restbed
-  ```
+7. 分别在 `./conan/debug/` 和 `./conan/release/` 目录下执行install.bat
 
 然后打开QT Creator编译即可。
 
@@ -101,12 +74,27 @@
 
 配置文件Demo
 
+单账号版本，但账号版本需要生成账号对应的trade.dll文件
+
 ```
 bind=10.11.5.175    ; 绑定的ip地址，默认是127.0.0.1
 port=10092          ; 绑定的端口
 trade_dll_path=D:\\trade_rainx.dll   ;一份可以使用的trade.dll文件
 transport_enc_key=4f1cf3fec4c84c84   ; 可选， aes加密秘钥
 transport_enc_iv=0c78abc083b011e7    ; 可选， aes加密iv
+```
+
+多账号版本，多账号版本只需指定一份有效的trade.dll文档（不必绑定你的账号）
+
+```
+bind=10.11.5.175    ; 绑定的ip地址，默认是127.0.0.1
+port=10092          ; 绑定的端口
+trade_dll_path=D:\\trade_template.dll   ;trade.dll文件, 可以使绑定任意账号的版本，程序会在运行时动态绑定你的账号，所以这里无须预先绑定账号
+transport_enc_key=4f1cf3fec4c84c84   ; 可选， aes加密秘钥
+transport_enc_iv=0c78abc083b011e7    ; 可选， aes加密iv
+multiaccount=true                    ; 设置多用户版本开启
+dlls_path=D:\\dlls                   ; 绑定的用户dlls所在目录，注意必须是有效的目录
+preload_accounts=880001yyyyyy,880001xxxxxxx ; 预先家在德账号列表（建议设置），将在程序启动的时候预先生成绑定账号并载入，提高登入速度。
 ```
 
 注意，后面的加密选项为可选，如果`transport_enc_key` 或者 `transport_enc_iv` 不提供的话，将使用明文和`client api`通讯，请注意和`client api`保持一致。 如果您跨机器调用接口，建议使用加密功能，并且，请生成随即密钥和iv, 注意，我们这里`key`和`iv`必须是`16`个字节

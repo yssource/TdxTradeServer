@@ -29,7 +29,12 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 CONFIG += conan_basic_setup
-include("./conanbuildinfo.pri")
+
+CONFIG(debug, debug|release) {
+    include("./conan/debug/conanbuildinfo.pri")
+} else {
+    include("./conan/release/conanbuildinfo.pri")
+}
 
 QMAKE_CXXFLAGS_DEBUG+=-MTd
 QMAKE_CXXFLAGS_RELEASE+=-MT
@@ -48,4 +53,9 @@ DISTFILES += \
     README.md \
     build_debug_version.py \
     .gitignore \
-    ChangeLog.md
+    ChangeLog.md \
+    build_release_version.py
+
+RC_FILE += resource.rc
+
+
