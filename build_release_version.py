@@ -47,6 +47,8 @@ if __name__ == "__main__":
     os.mkdir(files_path)
     p("cp all dependencies...")
     [shutil.copy( os.path.join(os.path.join(bpath, "release_version_dependencies"), s), files_path) for s in os.listdir( os.path.join(bpath, "release_version_dependencies"))]
+    p("cp Readme files...");
+    [shutil.copy( os.path.join(bpath, md_file), files_path) for md_file in ["README.md", "ChangeLog.md"]]
     p("cp exe file...")
     exec_path = os.path.join(os.path.dirname(bpath), "build-TdxTradeServer-Desktop_Qt_" + qt_version + "_MSVC2015_32bit-Release") + "\\release\\TdxTradeServer.exe"
     if os.path.exists(exec_path):
