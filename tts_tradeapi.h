@@ -34,6 +34,7 @@ public:
     json sendOrder(int ClientID, int Category ,int PriceType, const char* Gddm, const char* Zqdm , float Price, int Quantity);
     json cancelOrder(int ClientID, const char* ExchangeID, const char* hth);
     json getQuote(int ClientID, const char* Zqdm);
+    json queryHistoryData(int ClientID, int Category, const char* BeginDate, const char* EndDate);
     json repay(int ClientID, const char* Amount);
     json jsonError(QString str);
 };

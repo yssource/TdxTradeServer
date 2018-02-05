@@ -116,6 +116,14 @@ json TTS_TradeApi::repay(int ClientID, const char *Amount) {
     return (dll == nullptr) ? jsonError(INVALID_CLIENT_ID): j;
 }
 
+json TTS_TradeApi::queryHistoryData(int ClientID, int Category, const char* BeginDate, const char* EndDate) {
+    int loginId = getLoginIdBySessionId(ClientID);
+    int seq = getSeqBySessionId(ClientID);
+    std::shared_ptr<TTS_Dll> dll = TTS_Dll::getInstance(_so, seq);
+    json j = dll->queryHistoryData(loginId, Category, BeginDate, EndDate);
+    return (dll == nullptr) ? jsonError(INVALID_CLIENT_ID): j;
+}
+
 json TTS_TradeApi::jsonError(QString str) {
     string value;
     if (outputUtf8) {

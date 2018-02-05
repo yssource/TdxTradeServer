@@ -22,6 +22,7 @@ typedef void(__stdcall *LPFN_SENDORDER)(int ClientID, int Category ,int PriceTyp
 typedef void(__stdcall *LPFN_CANCELORDER)(int ClientID, const char* ExchangeID, const char* hth, char* Result, char* ErrInfo);
 typedef void(__stdcall *LPFN_GETQUOTE)(int ClientID, const char* Zqdm, char* Result, char* ErrInfo);
 typedef void(__stdcall *LPFN_REPAY)(int ClientID, const char* Amount, char* Result, char* ErrInfo);
+typedef void(__stdcall *LPFN_QUERYHISTORYDATA)(int ClientID, int Category, const char* BeginDate, const char* EndDate, char* Result, char* ErrInfo); //QueryHistoryData
 
 #define P_LOGON         "logon"
 #define P_LOGOFF        "logoff"
@@ -30,6 +31,7 @@ typedef void(__stdcall *LPFN_REPAY)(int ClientID, const char* Amount, char* Resu
 #define P_CANCELORDER   "cancel_order"
 #define P_GETQUOTE      "get_quote"
 #define P_REPAY         "repay"
+#define P_QUERYHISTORYDATA "query_history_data"
 
 class TTS_Dll
 {
@@ -51,6 +53,7 @@ private:
     LPFN_CANCELORDER lpCancelOrder;
     LPFN_GETQUOTE lpGetQuote;
     LPFN_REPAY lpRepay;
+    LPFN_QUERYHISTORYDATA lpQueryHistoryData;
 
     QMutex apiCallMutex; // add lock to all network call
     bool outputUtf8;
@@ -77,6 +80,7 @@ public:
     json cancelOrder(int ClientID, const char* ExchangeID, const char* hth);
     json getQuote(int ClientID, const char* Zqdm);
     json repay(int ClientID, const char* Amount);
+    json queryHistoryData(int ClientID, int Category, const char* BeginDate, const char* EndDate);
     const uint32_t getSeq() const {return seq; }
 
 // 实现一个多例模式，针对不同的帐号名，返回不同的

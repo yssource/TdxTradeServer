@@ -85,6 +85,7 @@ TTS_Dll::TTS_Dll(const TTS_SettingObject& so, const std::string& accountNo):apiC
     lpCancelOrder = (LPFN_CANCELORDER) GetProcAddress(hDLL, "CancelOrder");
     lpGetQuote = (LPFN_GETQUOTE) GetProcAddress(hDLL, "GetQuote");
     lpRepay = (LPFN_REPAY) GetProcAddress(hDLL, "Repay");
+    lpQueryHistoryData = (LPFN_QUERYHISTORYDATA) GetProcAddress(hDLL, "QueryHistoryData");
     // end load functioins
 
     // initialize tdx
@@ -280,6 +281,13 @@ json TTS_Dll::repay(int ClientID, const char *Amount) {
     lpRepay(ClientID, Amount, result, errout);
     return convertTableToJSON(result, errout);
 }
+
+json TTS_Dll::queryHistoryData(int ClientID, int Category, const char* BeginDate, const char* EndDate) {
+    QMutexLocker ml(&apiCallMutex);
+    lpQueryHistoryData(ClientID, Category, BeginDate, EndDate, result, errout);
+    return convertTableToJSON(result, errout);
+}
+
 
 
 void TTS_Dll::setupErrForJson(const char* errout, json& resultJSON)

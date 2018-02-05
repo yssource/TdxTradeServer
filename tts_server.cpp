@@ -198,6 +198,15 @@ void TTS_Server::postMethodHandler(const shared_ptr< Session > session) {
             } else {
                 responseBody = tradeApi->jsonError("error params").dump();
             }
+        } else if (func == P_QUERYHISTORYDATA) {
+            if (params["client_id"].is_number()
+                    && params["category"].is_number()
+                    && params["begin_date"].is_string()
+                    && params["end_date"].is_string()) {
+                responseBody = tradeApi->queryHistoryData(params["client_id"].get<int>(), params["category"].get<int>(), params["begin_date"].get<string>().c_str(), params["end_date"].get<string>().c_str()).dump();
+            } else {
+                responseBody = tradeApi->jsonError("error params").dump();
+            }
         } else if (func == "stop_server") {
             qInfo() << "Server Stop Command Called!";
             stop();
