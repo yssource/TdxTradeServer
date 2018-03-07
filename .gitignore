@@ -77,3 +77,5 @@ conaninfo.txt
 
 !debug_version_dependencies/*.dll
 !release_version_dependencies/*.dll
+
+!resource.rc
