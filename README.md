@@ -49,6 +49,22 @@
 +--------------------------------------------------------------+
 ```
 
+## 安装
+
+方法1: https://github.com/rainx/TdxTradeServer/releases
+方法2: (使用Python) 
+```python
+安装pytdx
+> pip install pytdx
+安装配置服务器
+> get_tts
+```
+
+## 客户端
+
+- python ([pytdx](https://github.com/rainx/pytdx))
+- Node.JS(javascript) ([tdx.js](https://github.com/rainx/tdx.js))
+
 ## 构建
 
 本程序使用QT5.9.1开发，使用`restbed`作为web server实现，使用`jsonformoderncpp`作为json序列化和反序列化工具，使用`conan`作为c++依赖库的管理。 请使用兼容`c++11`的编译器编译（这里我使用的vs2015的编译器，理论上mingw应该也可以）
