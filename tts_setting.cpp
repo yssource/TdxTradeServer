@@ -57,6 +57,7 @@ TTS_SettingObject TTS_Setting::loadSettings()
         so.multiaccount = false;
         so.preload_accounts = QStringList();
         so.dlls_path = QString("");
+        so.active_clients = true;
     } else {
         so.port = setting->value("port", DEFAULT_PORT).toInt();
         so.trade_dll_path = setting->value("trade_dll_path", defaultPath).toString();
@@ -71,6 +72,7 @@ TTS_SettingObject TTS_Setting::loadSettings()
         so.multiaccount = setting->value("multiaccount").toBool();
         so.preload_accounts = setting->value("preload_accounts", QStringList()).toStringList();
         so.dlls_path = setting->value("dlls_path", QString("")).toString();
+        so.active_clients = setting->value("active_clients", true).toBool();
     }
 
     qInfo() << "Using port : " << so.port;
@@ -81,6 +83,7 @@ TTS_SettingObject TTS_Setting::loadSettings()
         qInfo() << "SSL certificate : " << so.ssl_certificate;
         qInfo() << "SSL private key : " << so.ssl_private_key;
     }
+    qInfo() << "Active clients setting is " << (so.active_clients ? "on" : "off");
 
     if (!so.transport_enc_key.isEmpty()) {
         // 检测有效性

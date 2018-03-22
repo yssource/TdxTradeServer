@@ -1,5 +1,6 @@
 #include "tts_server.h"
 #include "tts_tradeapi.h"
+#include "tts_activeclients.h"
 #include <QObject>
 #include <memory>
 #include <QDebug>
@@ -136,7 +137,17 @@ void TTS_Server::postMethodHandler(const shared_ptr< Session > session) {
 
         } else if (func == P_LOGOFF) {
             if (params["client_id"].is_number()) {
-                responseBody = tradeApi->logoff(params["client_id"].get<int>()).dump();
+                if (_setting.active_clients) {
+                    // check session id is in active clients
+                    uint32_t sessionId = params["client_id"].get<int>();
+                    if (TTS_ActiveClients::ins()->sessionIdExists(sessionId)) {
+                        responseBody = tradeApi->logoff(params["client_id"].get<int>()).dump();
+                    } else {
+                        responseBody = "{\"success\":false, \"error\": \"unknown id\"}";
+                    }
+                } else {
+                    responseBody = tradeApi->logoff(params["client_id"].get<int>()).dump();
+                }
             } else {
                 responseBody = tradeApi->jsonError("error params").dump();
             }
@@ -206,6 +217,13 @@ void TTS_Server::postMethodHandler(const shared_ptr< Session > session) {
                 responseBody = tradeApi->queryHistoryData(params["client_id"].get<int>(), params["category"].get<int>(), params["begin_date"].get<string>().c_str(), params["end_date"].get<string>().c_str()).dump();
             } else {
                 responseBody = tradeApi->jsonError("error params").dump();
+            }
+        } else if (func == P_GETACTIVECLIENTS) {
+            if (_setting.active_clients) {
+                TTS_ActiveClients::ins();
+                responseBody = TTS_ActiveClients::ins()->toJson().dump();
+            } else {
+                responseBody = "{\"success\":false, \"error\": \"active clients option setting turn off on server side\"}";
             }
         } else if (func == "stop_server") {
             qInfo() << "Server Stop Command Called!";

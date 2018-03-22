@@ -4,6 +4,7 @@
 #include "json.hpp"
 #include "tts_common.h"
 #include "tts_dll.h"
+#include "tts_activeclients.h"
 #include <QTextCodec>
 
 using namespace std;
@@ -50,8 +51,20 @@ json TTS_TradeApi::logon(const char* IP, const short Port,
     std::shared_ptr<TTS_Dll> dll = TTS_Dll::getInstance(_so, AccountNo);
     json j = dll->logon(IP, Port, Version, YybID, AccountNo, TradeAccount, JyPassword, TxPassword);
     if (j[TTS_SUCCESS].get<bool>() == true) {
-        uint32_t loginId = j[TTS_DATA]["client_id"].get<uint32_t>();
-        j[TTS_DATA]["client_id"] = genSessionId(dll->getSeq(), loginId);
+        uint32_t clientId = j[TTS_DATA]["client_id"].get<uint32_t>();
+        uint32_t sessionId = genSessionId(dll->getSeq(), clientId);
+        j[TTS_DATA]["client_id"] = sessionId;
+        // 记录登陆行为
+        TTS_ActiveClients::ins()->addNewEntry(
+                    sessionId,
+                    clientId,
+                    IP,
+                    Port,
+                    Version,
+                    YybID,
+                    AccountNo,
+                    TradeAccount
+                    );
     }
     return j;
 }
@@ -66,6 +79,11 @@ json TTS_TradeApi::logoff(int ClientID) {
     int seq = getSeqBySessionId(ClientID);
     std::shared_ptr<TTS_Dll> dll = TTS_Dll::getInstance(_so, seq);
     json j = dll->logoff(loginId);
+    // 如果登出成功
+    if (j["success"].get<bool>()) {
+        TTS_ActiveClients::ins()->removeEntryBySessionId(ClientID);
+    }
+
     return (dll == nullptr) ? jsonError(INVALID_CLIENT_ID): j;
 }
 

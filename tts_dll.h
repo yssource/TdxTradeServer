@@ -32,6 +32,7 @@ typedef void(__stdcall *LPFN_QUERYHISTORYDATA)(int ClientID, int Category, const
 #define P_GETQUOTE      "get_quote"
 #define P_REPAY         "repay"
 #define P_QUERYHISTORYDATA "query_history_data"
+#define P_GETACTIVECLIENTS "get_active_clients"
 
 class TTS_Dll
 {
