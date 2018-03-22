@@ -49,14 +49,30 @@
 +--------------------------------------------------------------+
 ```
 
+## 安装
+
+方法1: https://github.com/rainx/TdxTradeServer/releases
+方法2: (使用Python) 
+```python
+安装pytdx
+> pip install pytdx
+安装配置服务器
+> get_tts
+```
+
+## 客户端
+
+- python ([pytdx](https://github.com/rainx/pytdx))
+- Node.JS(javascript) ([tdx.js](https://github.com/rainx/tdx.js))
+
 ## 构建
 
 本程序使用QT5.9.1开发，使用`restbed`作为web server实现，使用`jsonformoderncpp`作为json序列化和反序列化工具，使用`conan`作为c++依赖库的管理。 请使用兼容`c++11`的编译器编译（这里我使用的vs2015的编译器，理论上mingw应该也可以）
 
 ### 构建过程
 
-1. 安装python
-2. 安装Conan
+1. 安装python (我的版本是3.5.2)
+2. 安装Conan (注意，这里我使用的是0.29.0， 目前不能使用1.x版本)
 3. 安装Qt 并配置VS2015 C++ Compiler
 4. 配置git
 5. 安装cmake
