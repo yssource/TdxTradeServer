@@ -1,6 +1,6 @@
-1.7 修复logoff的时候，指定错误的client_id时会出现服务器崩溃的问题2018-03-22
+1.7 修复logoff的时候，指定错误的client_id时会出现服务器崩溃的问题 2018-03-22
 ----
-* 修复logoff时程序崩溃bug
+* 修复logoff时程序崩溃bug issue #7
 * 增加`active_clients`配置项和`get_active_clients`命令。
 
 1.6 增加query_history_data接口 2018-02-05
