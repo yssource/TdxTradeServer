@@ -36,6 +36,7 @@ public:
     json getQuote(int ClientID, const char* Zqdm);
     json queryHistoryData(int ClientID, int Category, const char* BeginDate, const char* EndDate);
     json repay(int ClientID, const char* Amount);
+    json queryDatas(int clientId, int categories[], int count);
     json jsonError(QString str);
 };
 

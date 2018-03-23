@@ -23,6 +23,8 @@ typedef void(__stdcall *LPFN_CANCELORDER)(int ClientID, const char* ExchangeID, 
 typedef void(__stdcall *LPFN_GETQUOTE)(int ClientID, const char* Zqdm, char* Result, char* ErrInfo);
 typedef void(__stdcall *LPFN_REPAY)(int ClientID, const char* Amount, char* Result, char* ErrInfo);
 typedef void(__stdcall *LPFN_QUERYHISTORYDATA)(int ClientID, int Category, const char* BeginDate, const char* EndDate, char* Result, char* ErrInfo); //QueryHistoryData
+typedef void(__stdcall *LPFN_SENDORDERS)(int clientId, int categories[], int priceTypes[], const char* gddms, const char* zqdms, float prices[], int quantities, int count, char** results, char** errInfos); // SendOrders
+typedef void(__stdcall *LPFN_QUERYDATAS)(int clientId, int categories[], int count, char** results, char** errInfos);
 
 #define P_LOGON         "logon"
 #define P_LOGOFF        "logoff"
@@ -33,6 +35,8 @@ typedef void(__stdcall *LPFN_QUERYHISTORYDATA)(int ClientID, int Category, const
 #define P_REPAY         "repay"
 #define P_QUERYHISTORYDATA "query_history_data"
 #define P_GETACTIVECLIENTS "get_active_clients"
+#define P_SENDORDERS    "send_orders"
+#define P_QUERYDATAS    "query_datas"
 
 class TTS_Dll
 {
@@ -55,15 +59,21 @@ private:
     LPFN_GETQUOTE lpGetQuote;
     LPFN_REPAY lpRepay;
     LPFN_QUERYHISTORYDATA lpQueryHistoryData;
+    LPFN_SENDORDERS lpSendOrders;
+    LPFN_QUERYDATAS lpQueryDatas;
 
     QMutex apiCallMutex; // add lock to all network call
     bool outputUtf8;
 
     void setupErrForJson(const char* errout, json& resultJSON);
     uint32_t    seq;
-
+    void allocResultsAndErrorInfos(int count, /* out */ char**& results, /* out */ char**& errorInfos);
+    void freeResulsAndErrorInfos(int count, /* out */ char**& results, /* out */ char**& errorInfos);
 protected:
     json convertTableToJSON(const char* result, const char* errout);
+    json convertMultiTableToJSON(int count, char**& results, char**& errout);
+
+    void _strToTable(const char *result, json& j);
 
 public:
     ~TTS_Dll();
@@ -82,6 +92,8 @@ public:
     json getQuote(int ClientID, const char* Zqdm);
     json repay(int ClientID, const char* Amount);
     json queryHistoryData(int ClientID, int Category, const char* BeginDate, const char* EndDate);
+    json sendOrders(int clientId, int categories[], int priceTypes[], const char* gddms, const char* zqdms, float prices[], int quantities, int count);
+    json queryDatas(int clientId, int categories[], int count);
     const uint32_t getSeq() const {return seq; }
 
 // 实现一个多例模式，针对不同的帐号名，返回不同的

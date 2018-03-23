@@ -142,6 +142,15 @@ json TTS_TradeApi::queryHistoryData(int ClientID, int Category, const char* Begi
     return (dll == nullptr) ? jsonError(INVALID_CLIENT_ID): j;
 }
 
+json TTS_TradeApi::queryDatas(int clientId, int categories[], int count) {
+    int loginId = getLoginIdBySessionId(clientId);
+    int seq = getSeqBySessionId(clientId);
+    std::shared_ptr<TTS_Dll> dll = TTS_Dll::getInstance(_so, seq);
+    json j = dll->queryDatas(loginId, categories, count);
+    return (dll == nullptr) ? jsonError(INVALID_CLIENT_ID): j;
+}
+
+
 json TTS_TradeApi::jsonError(QString str) {
     string value;
     if (outputUtf8) {

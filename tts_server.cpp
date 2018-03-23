@@ -218,6 +218,18 @@ void TTS_Server::postMethodHandler(const shared_ptr< Session > session) {
             } else {
                 responseBody = tradeApi->jsonError("error params").dump();
             }
+        } else if (func == P_QUERYDATAS) {
+            if (params["categories"].is_array()
+                    && params["client_id"].is_number()) {
+                size_t count = params["categories"].size();
+                int* categories = new int[count];
+                for(size_t i = 0; i < count; i++) {
+                    categories[i] = params["categories"][i].get<int>();
+                }
+                responseBody = tradeApi->queryDatas(params["client_id"].get<int>(), categories, (int)count).dump();
+            } else {
+                responseBody = tradeApi->jsonError("error params").dump();
+            }
         } else if (func == P_GETACTIVECLIENTS) {
             if (_setting.active_clients) {
                 TTS_ActiveClients::ins();

@@ -86,6 +86,7 @@ TTS_Dll::TTS_Dll(const TTS_SettingObject& so, const std::string& accountNo):apiC
     lpGetQuote = (LPFN_GETQUOTE) GetProcAddress(hDLL, "GetQuote");
     lpRepay = (LPFN_REPAY) GetProcAddress(hDLL, "Repay");
     lpQueryHistoryData = (LPFN_QUERYHISTORYDATA) GetProcAddress(hDLL, "QueryHistoryData");
+    lpQueryDatas = (LPFN_QUERYDATAS) GetProcAddress(hDLL, "QueryDatas");
     // end load functioins
 
     // initialize tdx
@@ -200,6 +201,28 @@ void TTS_Dll::setOutputUtf8(bool utf8) {
     outputUtf8 = utf8;
 }
 
+void TTS_Dll::allocResultsAndErrorInfos(int count, char**& results, char**& errorInfos)
+{
+    results = new char*[count];
+    errorInfos = new char*[count];
+    for (int n = 0; n < count; n++) {
+        results[n] = new char[4096];
+        errorInfos[n] = new char[4096];
+    }
+}
+
+void TTS_Dll::freeResulsAndErrorInfos(int count, char**& results, char**& errorInfos)
+{
+    for (int n = 0; n < count; n++) {
+        delete[] results[n];
+        delete[] errorInfos[n];
+        results[n] = NULL;
+        errorInfos[n] = NULL;
+    }
+
+    delete[] results;
+    delete[] errorInfos;
+}
 
 /**
  * @brief TTS_Dll::logon 登陆到服务器
@@ -288,7 +311,27 @@ json TTS_Dll::queryHistoryData(int ClientID, int Category, const char* BeginDate
     return convertTableToJSON(result, errout);
 }
 
+json TTS_Dll::sendOrders(int clientId, int categories[], int priceTypes[], const char *gddms, const char *zqdms, float prices[], int quantities, int count) {
+    QMutexLocker ml(&apiCallMutex);
+    char** results;
+    char** errorInfos;
+    allocResultsAndErrorInfos(count, results, errorInfos);
+    lpSendOrders(clientId, categories, priceTypes, gddms, zqdms, prices, quantities, count, results, errorInfos);
+    json resultJSON = convertMultiTableToJSON(count, results, errorInfos);
+    freeResulsAndErrorInfos(count, results, errorInfos);
+    return resultJSON;
+}
 
+json TTS_Dll::queryDatas(int clientId, int categories[], int count) {
+    QMutexLocker ml(&apiCallMutex);
+    char** results;
+    char** errorInfos;
+    allocResultsAndErrorInfos(count, results, errorInfos);
+    lpQueryDatas(clientId, categories, count, results, errorInfos);
+    json resultJSON = convertMultiTableToJSON(count, results, errorInfos);
+    freeResulsAndErrorInfos(count, results, errorInfos);
+    return resultJSON;
+}
 
 void TTS_Dll::setupErrForJson(const char* errout, json& resultJSON)
 {
@@ -302,23 +345,9 @@ void TTS_Dll::setupErrForJson(const char* errout, json& resultJSON)
 }
 
 
-/**
- * @brief TTS_Dll::convertTableToJSON 将\n分割行\t分割字符的类似 csv格式的信息转换为json格式
- * @param result
- * @return  json结构的 [{line1}, {line2} ... ] 信息
- */
 
-json TTS_Dll::convertTableToJSON(const char *result, const char* errout) {
-
-    json resultJSON;
-    if (result[0] == 0) {
-        resultJSON[TTS_SUCCESS] = false;
-        setupErrForJson(errout, resultJSON);
-        return resultJSON;
-    }
-
-    json j;
-    j = json::array();
+void TTS_Dll::_strToTable(const char *result, json& j)
+{
     QString strResult = QString::fromLocal8Bit(result);
     // qInfo() << strResult;
     QStringList sl = strResult.split("\n");
@@ -349,8 +378,57 @@ json TTS_Dll::convertTableToJSON(const char *result, const char* errout) {
             j.push_back(oneRecord);
         }
     }
+}
+
+/**
+ * @brief TTS_Dll::convertTableToJSON 将\n分割行\t分割字符的类似 csv格式的信息转换为json格式
+ * @param result
+ * @return  json结构的 [{line1}, {line2} ... ] 信息
+ */
+
+json TTS_Dll::convertTableToJSON(const char *result, const char* errout) {
+    json resultJSON;
+    if (result[0] == 0) {
+        resultJSON[TTS_SUCCESS] = false;
+        setupErrForJson(errout, resultJSON);
+        return resultJSON;
+    }
+
+    json j;
+    j = json::array();
+    _strToTable(result, j);
     resultJSON[TTS_SUCCESS] = true;
     resultJSON[TTS_DATA] = j;
+    return resultJSON;
+}
+
+json TTS_Dll::convertMultiTableToJSON(int count, char**& results, char**& errouts) {
+    json resultJSON;
+    if (count <=0) {
+        resultJSON[TTS_SUCCESS] = false;
+        setupErrForJson("count is less than zero", resultJSON);
+        return resultJSON;
+    }
+
+    resultJSON[TTS_SUCCESS] = true;
+    resultJSON[TTS_DATA] = json::array();
+
+    for (int n = 0; n < count; n++) {
+        json oneJsonEntry;
+        char* result = results[n];
+        char* errout = errouts[n];
+        if (result[0] == 0) {
+            oneJsonEntry[TTS_SUCCESS] = false;
+            setupErrForJson(errout, oneJsonEntry);
+        }
+        json j;
+        j = json::array();
+        _strToTable(result, j);
+        oneJsonEntry[TTS_SUCCESS] = true;
+        oneJsonEntry[TTS_DATA] = j;
+        resultJSON[TTS_DATA].push_back(oneJsonEntry);
+    }
+
     return resultJSON;
 }
 
