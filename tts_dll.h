@@ -19,12 +19,15 @@ typedef int (__stdcall *LPFN_LOGON)(const char* ip, const short port, const char
 typedef void(__stdcall *LPFN_LOGOFF)(int clientId);
 typedef void(__stdcall *LPFN_QUERYDATA)(int clientId, int category, char* result, char* errInfo);
 typedef void(__stdcall *LPFN_SENDORDER)(int clientId, int category ,int priceType,  const char* gddm,  const char* zqdm , float price, int quantity,  char* result, char* errInfo);
-typedef void(__stdcall *LPFN_CANCELORDER)(int clientId, const char* exchangeID, const char* hth, char* result, char* errInfo);
+typedef void(__stdcall *LPFN_CANCELORDER)(int clientId, const char* exchangeId, const char* hth, char* result, char* errInfo);
 typedef void(__stdcall *LPFN_GETQUOTE)(int clientId, const char* zqdm, char* result, char* errInfo);
 typedef void(__stdcall *LPFN_REPAY)(int clientId, const char* amount, char* result, char* errInfo);
 typedef void(__stdcall *LPFN_QUERYHISTORYDATA)(int clientId, int category, const char* beginDate, const char* endDate, char* result, char* errInfo); //QueryHistoryData
 typedef void(__stdcall *LPFN_SENDORDERS)(int clientId, int categories[], int priceTypes[], const char* gddms, const char* zqdms, float prices[], int quantities, int count, char** results, char** errInfos); // SendOrders
+typedef void(__stdcall *LPFN_CANCELORDERS)(int clientId, const char* exchangeIds[], const char* hths[], int count, char** results, char** errInfos); // SendOrders
 typedef void(__stdcall *LPFN_QUERYDATAS)(int clientId, int categories[], int count, char** results, char** errInfos);
+typedef void(__stdcall *LPFN_GETQUOTES)(int clientId, const char*  zqdms[], int count, char** results, char** errInfos);
+
 
 #define P_LOGON         "logon"
 #define P_LOGOFF        "logoff"
@@ -37,6 +40,8 @@ typedef void(__stdcall *LPFN_QUERYDATAS)(int clientId, int categories[], int cou
 #define P_GETACTIVECLIENTS "get_active_clients"
 #define P_SENDORDERS    "send_orders"
 #define P_QUERYDATAS    "query_datas"
+#define P_CANCELORDERS  "cancel_orders"
+#define P_GETQUOTES      "get_quotes"
 
 class TTS_Dll
 {
@@ -61,6 +66,8 @@ private:
     LPFN_QUERYHISTORYDATA lpQueryHistoryData;
     LPFN_SENDORDERS lpSendOrders;
     LPFN_QUERYDATAS lpQueryDatas;
+    LPFN_CANCELORDERS lpCancelOrders;
+    LPFN_GETQUOTES lpGetQuotes;
 
     QMutex apiCallMutex; // add lock to all network call
     bool outputUtf8;
@@ -94,6 +101,8 @@ public:
     json queryHistoryData(int clientId, int category, const char* beginDate, const char* endDate);
     json sendOrders(int clientId, int categories[], int priceTypes[], const char* gddms, const char* zqdms, float prices[], int quantities, int count);
     json queryDatas(int clientId, int categories[], int count);
+    json cancelOrders(int clientId, const char* exchangeIds[], const char* hths[], int count);
+    json getQuotes(int clientId, const char*  zqdms[], int count);
     const uint32_t getSeq() const {return seq; }
 
 // 实现一个多例模式，针对不同的帐号名，返回不同的

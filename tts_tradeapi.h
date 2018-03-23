@@ -37,6 +37,9 @@ public:
     json queryHistoryData(int clientId, int category, const char* beginDate, const char* endDate);
     json repay(int clientId, const char* amount);
     json queryDatas(int clientId, int categories[], int count);
+    json sendOrders(int clientId, int categories[], int priceTypes[], const char* gddms, const char* zqdms, float prices[], int quantities, int count);
+    json cancelOrders(int clientId, const char* exchangeIds[], const char* hths[], int count);
+    json getQuotes(int clientId, const char*  zqdms[], int count);
     json jsonError(QString str);
 };
 

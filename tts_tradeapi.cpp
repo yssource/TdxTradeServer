@@ -150,6 +150,29 @@ json TTS_TradeApi::queryDatas(int clientId, int categories[], int count) {
     return (dll == nullptr) ? jsonError(INVALID_CLIENT_ID): j;
 }
 
+json TTS_TradeApi::sendOrders(int clientId, int categories[], int priceTypes[], const char *gddms, const char *zqdms, float prices[], int quantities, int count) {
+    int loginId = getLoginIdBySessionId(clientId);
+    int seq = getSeqBySessionId(clientId);
+    std::shared_ptr<TTS_Dll> dll = TTS_Dll::getInstance(_so, seq);
+    json j = dll->sendOrders(loginId, categories, priceTypes, gddms, zqdms, prices, quantities, count);
+    return (dll == nullptr) ? jsonError(INVALID_CLIENT_ID): j;
+}
+
+json TTS_TradeApi::cancelOrders(int clientId, const char *exchangeIds[], const char *hths[], int count) {
+    int loginId = getLoginIdBySessionId(clientId);
+    int seq = getSeqBySessionId(clientId);
+    std::shared_ptr<TTS_Dll> dll = TTS_Dll::getInstance(_so, seq);
+    json j = dll->cancelOrders(loginId, exchangeIds, hths, count);
+    return (dll == nullptr) ? jsonError(INVALID_CLIENT_ID): j;
+}
+
+json TTS_TradeApi::getQuotes(int clientId, const char *zqdms[], int count) {
+    int loginId = getLoginIdBySessionId(clientId);
+    int seq = getSeqBySessionId(clientId);
+    std::shared_ptr<TTS_Dll> dll = TTS_Dll::getInstance(_so, seq);
+    json j = dll->getQuotes(loginId, zqdms, count);
+    return (dll == nullptr) ? jsonError(INVALID_CLIENT_ID): j;
+}
 
 json TTS_TradeApi::jsonError(QString str) {
     string value;

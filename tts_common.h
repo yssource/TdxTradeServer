@@ -15,4 +15,9 @@
                             "|   A Rest Proxy for trade.dll ------------->   RainX!   |\n" \
                             "|                                                        |\n" \
                             "+--------------------------------------------------------+\n"
+
+#define TTS_ERROR_CONTENT_MAX_SIZE 1024
+#define TTS_RESULT_CONTENT_MAX_SIZE 1024 * 1024
+
+
 #endif // TTS_COMMON_H

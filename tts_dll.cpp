@@ -87,13 +87,16 @@ TTS_Dll::TTS_Dll(const TTS_SettingObject& so, const std::string& accountNo):apiC
     lpRepay = (LPFN_REPAY) GetProcAddress(hDLL, "Repay");
     lpQueryHistoryData = (LPFN_QUERYHISTORYDATA) GetProcAddress(hDLL, "QueryHistoryData");
     lpQueryDatas = (LPFN_QUERYDATAS) GetProcAddress(hDLL, "QueryDatas");
+    lpSendOrders = (LPFN_SENDORDERS) GetProcAddress(hDLL, "SendOrders");
+    lpCancelOrders = (LPFN_CANCELORDERS) GetProcAddress(hDLL, "CancelOrders");
+    lpGetQuotes = (LPFN_GETQUOTES) GetProcAddress(hDLL, "GetQuotes");
     // end load functioins
 
     // initialize tdx
     lpOpenTdx();
 
-    errout = new char[1024];
-    result = new char[1024 * 1024];
+    errout = new char[TTS_ERROR_CONTENT_MAX_SIZE];
+    result = new char[TTS_RESULT_CONTENT_MAX_SIZE];
     initSuccess = true;
     TTS_Dll::seqMutex.lock();
     seq= TTS_Dll::maxSeq++;
@@ -206,8 +209,8 @@ void TTS_Dll::allocResultsAndErrorInfos(int count, char**& results, char**& erro
     results = new char*[count];
     errorInfos = new char*[count];
     for (int n = 0; n < count; n++) {
-        results[n] = new char[4096];
-        errorInfos[n] = new char[4096];
+        results[n] = new char[TTS_RESULT_CONTENT_MAX_SIZE];
+        errorInfos[n] = new char[TTS_ERROR_CONTENT_MAX_SIZE];
     }
 }
 
@@ -333,6 +336,28 @@ json TTS_Dll::queryDatas(int clientId, int categories[], int count) {
     return resultJSON;
 }
 
+json TTS_Dll::cancelOrders(int clientId, const char *exchangeIds[], const char *hths[], int count) {
+    QMutexLocker ml(&apiCallMutex);
+    char** results;
+    char** errorInfos;
+    allocResultsAndErrorInfos(count, results, errorInfos);
+    lpCancelOrders(clientId, exchangeIds, hths, count, results, errorInfos);
+    json resultJSON = convertMultiTableToJSON(count, results, errorInfos);
+    freeResulsAndErrorInfos(count, results, errorInfos);
+    return resultJSON;
+}
+
+json TTS_Dll::getQuotes(int clientId, const char *zqdms[], int count) {
+    QMutexLocker ml(&apiCallMutex);
+    char** results;
+    char** errorInfos;
+    allocResultsAndErrorInfos(count, results, errorInfos);
+    lpGetQuotes(clientId, zqdms, count, results, errorInfos);
+    json resultJSON = convertMultiTableToJSON(count, results, errorInfos);
+    freeResulsAndErrorInfos(count, results, errorInfos);
+    return resultJSON;
+}
+
 void TTS_Dll::setupErrForJson(const char* errout, json& resultJSON)
 {
     if (outputUtf8) {
@@ -343,8 +368,6 @@ void TTS_Dll::setupErrForJson(const char* errout, json& resultJSON)
         resultJSON[TTS_ERROR] = errout;
     }
 }
-
-
 
 void TTS_Dll::_strToTable(const char *result, json& j)
 {

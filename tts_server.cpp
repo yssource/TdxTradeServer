@@ -227,6 +227,30 @@ void TTS_Server::postMethodHandler(const shared_ptr< Session > session) {
                     categories[i] = params["categories"][i].get<int>();
                 }
                 responseBody = tradeApi->queryDatas(params["client_id"].get<int>(), categories, (int)count).dump();
+                delete[] categories;
+            } else {
+                responseBody = tradeApi->jsonError("error params").dump();
+            }
+        } else if (func == P_SENDORDERS) {
+
+        } else if (func == P_CANCELORDERS) {
+
+        } else if (func == P_GETQUOTES) {
+            if (params["zqdms"].is_array()
+                    && params["client_id"].is_number()) {
+                size_t count = params["zqdms"].size();
+                const char** zqdms = new const char*[count];
+                char** realzqdms = new char*[count];
+                for(size_t i = 0; i < count; i++) {
+                    realzqdms[i] = strdup(params["zqdms"][i].get<std::string>().c_str());
+                    zqdms[i] = realzqdms[i];
+                }
+                responseBody = tradeApi->getQuotes(params["client_id"].get<int>(), zqdms, (int)count).dump();
+                for(size_t i = 0; i < count; i++) {
+                    free(realzqdms[i]);
+                }
+                delete[] zqdms;
+                delete[] realzqdms;
             } else {
                 responseBody = tradeApi->jsonError("error params").dump();
             }
