@@ -237,13 +237,13 @@ void TTS_Dll::freeResulsAndErrorInfos(int count, char**& results, char**& errorI
  * @return data -> { "client_id" : xxx }
  *
  */
-json TTS_Dll::logon(const char* IP, const short Port,
-                        const char* Version, short YybID,
-                        const char* AccountNo, const char* TradeAccount,
-                        const char* JyPassword, const char* TxPassword) {
+json TTS_Dll::logon(const char* ip, const short port,
+                        const char* version, short yybId,
+                        const char* accountNo, const char* tradeAccount,
+                        const char* jyPassword, const char* txPassword) {
     QMutexLocker ml(&apiCallMutex);
     json j;
-    int ret = lpLogon(IP, Port, Version, YybID, AccountNo, TradeAccount, JyPassword, TxPassword, errout);
+    int ret = lpLogon(ip, port, version, yybId, accountNo, tradeAccount, jyPassword, txPassword, errout);
     if (ret == -1) {
         j[TTS_SUCCESS] = false;
         setupErrForJson(errout, j);
@@ -260,9 +260,9 @@ json TTS_Dll::logon(const char* IP, const short Port,
  * @param ClientID cilent_id
  * @return success => true/false
  */
-json TTS_Dll::logoff(int ClientID) {
+json TTS_Dll::logoff(int clientId) {
     QMutexLocker ml(&apiCallMutex);
-    lpLogoff(ClientID);
+    lpLogoff(clientId);
     json j;
     j[TTS_SUCCESS] = true;
     return j;
@@ -274,40 +274,40 @@ json TTS_Dll::logoff(int ClientID) {
  * @param Category 信息类别
  * @return [{}, {}, {} ]
  */
-json TTS_Dll::queryData(int ClientID, int Category) {
+json TTS_Dll::queryData(int clientId, int category) {
     QMutexLocker ml(&apiCallMutex);
-    lpQueryData(ClientID, Category, result, errout);
+    lpQueryData(clientId, category, result, errout);
     return convertTableToJSON(result, errout);
 }
 
 
-json TTS_Dll::sendOrder(int ClientID, int Category ,int PriceType, const char* Gddm,  const char* Zqdm , float Price, int Quantity) {
+json TTS_Dll::sendOrder(int clientId, int category ,int priceType, const char* gddm,  const char* zqdm , float price, int quantity) {
     QMutexLocker ml(&apiCallMutex);
-    lpSendOrder(ClientID, Category, PriceType, Gddm, Zqdm, Price, Quantity, result, errout);
+    lpSendOrder(clientId, category, priceType, gddm, zqdm, price, quantity, result, errout);
     return convertTableToJSON(result, errout);
 }
 
-json TTS_Dll::cancelOrder(int ClientID, const char *ExchangeID, const char *hth) {
+json TTS_Dll::cancelOrder(int clientId, const char *exchangeId, const char *hth) {
     QMutexLocker ml(&apiCallMutex);
-    lpCancelOrder(ClientID, ExchangeID, hth, result, errout);
+    lpCancelOrder(clientId, exchangeId, hth, result, errout);
     return convertTableToJSON(result, errout);
 }
 
-json TTS_Dll::getQuote(int ClientID, const char *Zqdm) {
+json TTS_Dll::getQuote(int clientId, const char *zqdm) {
     QMutexLocker ml(&apiCallMutex);
-    lpGetQuote(ClientID, Zqdm, result, errout);
+    lpGetQuote(clientId, zqdm, result, errout);
     return convertTableToJSON(result, errout);
 }
 
-json TTS_Dll::repay(int ClientID, const char *Amount) {
+json TTS_Dll::repay(int clientId, const char *amount) {
     QMutexLocker ml(&apiCallMutex);
-    lpRepay(ClientID, Amount, result, errout);
+    lpRepay(clientId, amount, result, errout);
     return convertTableToJSON(result, errout);
 }
 
-json TTS_Dll::queryHistoryData(int ClientID, int Category, const char* BeginDate, const char* EndDate) {
+json TTS_Dll::queryHistoryData(int clientId, int category, const char* beginDate, const char* endDate) {
     QMutexLocker ml(&apiCallMutex);
-    lpQueryHistoryData(ClientID, Category, BeginDate, EndDate, result, errout);
+    lpQueryHistoryData(clientId, category, beginDate, endDate, result, errout);
     return convertTableToJSON(result, errout);
 }
 

@@ -15,14 +15,14 @@ using json = nlohmann::json;
 typedef void (__stdcall *LPFN_OPENTDX)();
 typedef void (__stdcall *LPFN_CLOSETDX)();
 
-typedef int (__stdcall *LPFN_LOGON)(const char* IP, const short Port, const char* Version, short YybID,  const char* AccountNo, const char* TradeAccount, const char* JyPassword, const char* TxPassword, char* ErrInfo);
-typedef void(__stdcall *LPFN_LOGOFF)(int ClientID);
-typedef void(__stdcall *LPFN_QUERYDATA)(int ClientID, int Category, char* result, char* errInfo);
-typedef void(__stdcall *LPFN_SENDORDER)(int ClientID, int Category ,int PriceType,  const char* Gddm,  const char* Zqdm , float Price, int Quantity,  char* Result, char* ErrInfo);
-typedef void(__stdcall *LPFN_CANCELORDER)(int ClientID, const char* ExchangeID, const char* hth, char* Result, char* ErrInfo);
-typedef void(__stdcall *LPFN_GETQUOTE)(int ClientID, const char* Zqdm, char* Result, char* ErrInfo);
-typedef void(__stdcall *LPFN_REPAY)(int ClientID, const char* Amount, char* Result, char* ErrInfo);
-typedef void(__stdcall *LPFN_QUERYHISTORYDATA)(int ClientID, int Category, const char* BeginDate, const char* EndDate, char* Result, char* ErrInfo); //QueryHistoryData
+typedef int (__stdcall *LPFN_LOGON)(const char* ip, const short port, const char* version, short yybId,  const char* accountNo, const char* tradeAccount, const char* jyPassword, const char* txPassword, char* errInfo);
+typedef void(__stdcall *LPFN_LOGOFF)(int clientId);
+typedef void(__stdcall *LPFN_QUERYDATA)(int clientId, int category, char* result, char* errInfo);
+typedef void(__stdcall *LPFN_SENDORDER)(int clientId, int category ,int priceType,  const char* gddm,  const char* zqdm , float price, int quantity,  char* result, char* errInfo);
+typedef void(__stdcall *LPFN_CANCELORDER)(int clientId, const char* exchangeID, const char* hth, char* result, char* errInfo);
+typedef void(__stdcall *LPFN_GETQUOTE)(int clientId, const char* zqdm, char* result, char* errInfo);
+typedef void(__stdcall *LPFN_REPAY)(int clientId, const char* amount, char* result, char* errInfo);
+typedef void(__stdcall *LPFN_QUERYHISTORYDATA)(int clientId, int category, const char* beginDate, const char* endDate, char* result, char* errInfo); //QueryHistoryData
 typedef void(__stdcall *LPFN_SENDORDERS)(int clientId, int categories[], int priceTypes[], const char* gddms, const char* zqdms, float prices[], int quantities, int count, char** results, char** errInfos); // SendOrders
 typedef void(__stdcall *LPFN_QUERYDATAS)(int clientId, int categories[], int count, char** results, char** errInfos);
 
@@ -80,18 +80,18 @@ public:
     std::string makeSig(const std::string& accountNo);
     void setOutputUtf8(bool utf8);
 
-    json logon(const char* IP, const short Port,
-              const char* Version, short YybID,
-              const char* AccountNo, const char* TradeAccount,
-              const char* JyPassword, const char* TxPassword);
+    json logon(const char* ip, const short rort,
+              const char* version, short yybId,
+              const char* accountNo, const char* tradeAccount,
+              const char* jyPassword, const char* txPassword);
 
-    json logoff(int ClientID);
-    json queryData(int ClientID, int Category);
-    json sendOrder(int ClientID, int Category ,int PriceType, const char* Gddm, const char* Zqdm , float Price, int Quantity);
-    json cancelOrder(int ClientID, const char* ExchangeID, const char* hth);
-    json getQuote(int ClientID, const char* Zqdm);
-    json repay(int ClientID, const char* Amount);
-    json queryHistoryData(int ClientID, int Category, const char* BeginDate, const char* EndDate);
+    json logoff(int clientId);
+    json queryData(int clientId, int category);
+    json sendOrder(int clientId, int category ,int priceType, const char* gddm, const char* zqdm , float price, int quantity);
+    json cancelOrder(int clientId, const char* exchangeId, const char* hth);
+    json getQuote(int clientId, const char* zqdm);
+    json repay(int clientId, const char* amount);
+    json queryHistoryData(int clientId, int category, const char* beginDate, const char* endDate);
     json sendOrders(int clientId, int categories[], int priceTypes[], const char* gddms, const char* zqdms, float prices[], int quantities, int count);
     json queryDatas(int clientId, int categories[], int count);
     const uint32_t getSeq() const {return seq; }

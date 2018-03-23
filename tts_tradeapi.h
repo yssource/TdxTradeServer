@@ -24,18 +24,18 @@ public:
 
     void setOutputUtf8(bool utf8);
 
-    json logon(const char* IP, const short Port,
-              const char* Version, short YybID,
-              const char* AccountNo, const char* TradeAccount,
-              const char* JyPassword, const char* TxPassword);
+    json logon(const char* ip, const short port,
+              const char* version, short yybId,
+              const char* accountNo, const char* tradeAccount,
+              const char* jyPassword, const char* txPassword);
 
-    json logoff(int ClientID);
-    json queryData(int ClientID, int Category);
-    json sendOrder(int ClientID, int Category ,int PriceType, const char* Gddm, const char* Zqdm , float Price, int Quantity);
-    json cancelOrder(int ClientID, const char* ExchangeID, const char* hth);
-    json getQuote(int ClientID, const char* Zqdm);
-    json queryHistoryData(int ClientID, int Category, const char* BeginDate, const char* EndDate);
-    json repay(int ClientID, const char* Amount);
+    json logoff(int clientId);
+    json queryData(int clientId, int category);
+    json sendOrder(int clientId, int category ,int priceType, const char* gddm, const char* zqdm , float price, int quantity);
+    json cancelOrder(int clientId, const char* exchangeID, const char* hth);
+    json getQuote(int clientId, const char* zqdm);
+    json queryHistoryData(int clientId, int category, const char* beginDate, const char* endDate);
+    json repay(int clientId, const char* amount);
     json queryDatas(int clientId, int categories[], int count);
     json jsonError(QString str);
 };
