@@ -23,7 +23,7 @@ typedef void(__stdcall *LPFN_CANCELORDER)(int clientId, const char* exchangeId, 
 typedef void(__stdcall *LPFN_GETQUOTE)(int clientId, const char* zqdm, char* result, char* errInfo);
 typedef void(__stdcall *LPFN_REPAY)(int clientId, const char* amount, char* result, char* errInfo);
 typedef void(__stdcall *LPFN_QUERYHISTORYDATA)(int clientId, int category, const char* beginDate, const char* endDate, char* result, char* errInfo); //QueryHistoryData
-typedef void(__stdcall *LPFN_SENDORDERS)(int clientId, int categories[], int priceTypes[], const char* gddms, const char* zqdms, float prices[], int quantities, int count, char** results, char** errInfos); // SendOrders
+typedef void(__stdcall *LPFN_SENDORDERS)(int clientId, int categories[], int priceTypes[], const char* gddms[], const char* zqdms[], float prices[], int quantities[], int count, char** results, char** errInfos); // SendOrders
 typedef void(__stdcall *LPFN_CANCELORDERS)(int clientId, const char* exchangeIds[], const char* hths[], int count, char** results, char** errInfos); // SendOrders
 typedef void(__stdcall *LPFN_QUERYDATAS)(int clientId, int categories[], int count, char** results, char** errInfos);
 typedef void(__stdcall *LPFN_GETQUOTES)(int clientId, const char*  zqdms[], int count, char** results, char** errInfos);
@@ -99,7 +99,7 @@ public:
     json getQuote(int clientId, const char* zqdm);
     json repay(int clientId, const char* amount);
     json queryHistoryData(int clientId, int category, const char* beginDate, const char* endDate);
-    json sendOrders(int clientId, int categories[], int priceTypes[], const char* gddms, const char* zqdms, float prices[], int quantities, int count);
+    json sendOrders(int clientId, int categories[], int priceTypes[], const char* gddms[], const char* zqdms[], float prices[], int quantities[], int count);
     json queryDatas(int clientId, int categories[], int count);
     json cancelOrders(int clientId, const char* exchangeIds[], const char* hths[], int count);
     json getQuotes(int clientId, const char*  zqdms[], int count);

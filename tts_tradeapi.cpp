@@ -150,7 +150,7 @@ json TTS_TradeApi::queryDatas(int clientId, int categories[], int count) {
     return (dll == nullptr) ? jsonError(INVALID_CLIENT_ID): j;
 }
 
-json TTS_TradeApi::sendOrders(int clientId, int categories[], int priceTypes[], const char *gddms, const char *zqdms, float prices[], int quantities, int count) {
+json TTS_TradeApi::sendOrders(int clientId, int categories[], int priceTypes[], const char *gddms[], const char *zqdms[], float prices[], int quantities[], int count) {
     int loginId = getLoginIdBySessionId(clientId);
     int seq = getSeqBySessionId(clientId);
     std::shared_ptr<TTS_Dll> dll = TTS_Dll::getInstance(_so, seq);

@@ -314,7 +314,7 @@ json TTS_Dll::queryHistoryData(int clientId, int category, const char* beginDate
     return convertTableToJSON(result, errout);
 }
 
-json TTS_Dll::sendOrders(int clientId, int categories[], int priceTypes[], const char *gddms, const char *zqdms, float prices[], int quantities, int count) {
+json TTS_Dll::sendOrders(int clientId, int categories[], int priceTypes[], const char *gddms[], const char *zqdms[], float prices[], int quantities[], int count) {
     QMutexLocker ml(&apiCallMutex);
     char** results;
     char** errorInfos;

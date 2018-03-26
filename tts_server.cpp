@@ -232,9 +232,74 @@ void TTS_Server::postMethodHandler(const shared_ptr< Session > session) {
                 responseBody = tradeApi->jsonError("error params").dump();
             }
         } else if (func == P_SENDORDERS) {
+            if (params["orders"].is_array()
+                    && params["client_id"].is_number()) {
+                size_t count = params["orders"].size();
+                const char** gddms = new const char*[count];
+                char** realgddms = new char*[count];
+                const char** zqdms = new const char*[count];
+                char** realzqdms = new char*[count];
+                int* categories = new int[count];
+                int* priceTypes = new int[count];
+                float* prices = new float[count];
+                int* quantities = new int[count];
+                for(size_t i = 0; i < count; i++) {
+                    realgddms[i] = strdup(params["orders"][i]["gddm"].get<std::string>().c_str());
+                    gddms[i] = realgddms[i];
+                    realzqdms[i] = strdup(params["orders"][i]["zqdm"].get<std::string>().c_str());
+                    zqdms[i] = realzqdms[i];
 
+                    categories[i] = params["orders"][i]["category"].get<int>();
+                    priceTypes[i] = params["orders"][i]["price_type"].get<int>();
+                    prices[i] = params["orders"][i]["price"].get<float>();
+                    quantities[i] = params["orders"][i]["quantity"].get<int>();
+                }
+                responseBody = tradeApi->sendOrders(params["client_id"].get<int>(), categories, priceTypes, gddms, zqdms, prices, quantities, (int)count).dump();
+                for(size_t i = 0; i < count; i++) {
+                    free(realgddms[i]);
+                }
+                delete[] gddms;
+                delete[] realgddms;
+                for(size_t i = 0; i < count; i++) {
+                    free(realzqdms[i]);
+                }
+                delete[] zqdms;
+                delete[] realzqdms;
+                delete[] categories;
+                delete[] priceTypes;
+                delete[] prices;
+                delete[] quantities;
+            } else {
+                responseBody = tradeApi->jsonError("error params").dump();
+            }
         } else if (func == P_CANCELORDERS) {
-
+            if (params["orders"].is_array()
+                    && params["client_id"].is_number()) {
+                size_t count = params["orders"].size();
+                const char** hths = new const char*[count];
+                char** realhths = new char*[count];
+                const char** exchangeIds = new const char*[count];
+                char** realExchangeIds = new char*[count];
+                for(size_t i = 0; i < count; i++) {
+                    realhths[i] = strdup(params["orders"][i]["hth"].get<std::string>().c_str());
+                    hths[i] = realhths[i];
+                    realExchangeIds[i] = strdup(params["orders"][i]["exchange_id"].get<std::string>().c_str());
+                    exchangeIds[i] = realExchangeIds[i];
+                }
+                responseBody = tradeApi->cancelOrders(params["client_id"].get<int>(), exchangeIds,  hths, (int)count).dump();
+                for(size_t i = 0; i < count; i++) {
+                    free(realhths[i]);
+                }
+                delete[] hths;
+                delete[] realhths;
+                for(size_t i = 0; i < count; i++) {
+                    free(realExchangeIds[i]);
+                }
+                delete[] exchangeIds;
+                delete[] realExchangeIds;
+            } else {
+                responseBody = tradeApi->jsonError("error params").dump();
+            }
         } else if (func == P_GETQUOTES) {
             if (params["zqdms"].is_array()
                     && params["client_id"].is_number()) {
