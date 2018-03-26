@@ -49,14 +49,14 @@ HEADERS += \
     aes.h \
     tts_dll.h \
     tts_activeclients.h
-
 DISTFILES += \
     conanfile.txt \
     README.md \
     build_debug_version.py \
     .gitignore \
     ChangeLog.md \
-    build_release_version.py
+    build_release_version.py \
+    resource.rc
 
 RC_FILE += resource.rc
 

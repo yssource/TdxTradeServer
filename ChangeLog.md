@@ -1,3 +1,8 @@
+1.8 增加批量操作相关接口支持
+----
+* 修改部分参数，变量名称，统一命名风格
+* 增加批量操作接口QueryDatas, GetQuotes, CancelOrders, SendOrders支持
+
 1.7 修复logoff的时候，指定错误的client_id时会出现服务器崩溃的问题 2018-03-22
 ----
 * 修复logoff时程序崩溃bug issue #7
