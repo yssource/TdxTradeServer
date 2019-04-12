@@ -79,3 +79,8 @@ conaninfo.txt
 !release_version_dependencies/*.dll
 
 !resource.rc
+
+/.mypy_cache/
+GPATH
+GRTAGS
+GTAGS
